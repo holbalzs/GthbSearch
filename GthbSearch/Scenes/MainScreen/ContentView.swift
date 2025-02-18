@@ -22,6 +22,18 @@ struct ContentView: View {
                     Text("Search")
                 }
             }
+            switch viewModel.state {
+            case .idle:
+                EmptyView()
+            case .loading:
+                ProgressView {
+                    Text("Loading..")
+                }
+            case .loaded(let repos):
+                Text(repos.first?.name ?? "un")
+            case .failed(let error):
+                Text(error.localizedDescription)
+            }
         }
         .padding()
     }
