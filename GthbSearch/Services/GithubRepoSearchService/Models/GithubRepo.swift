@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct GithubRepo: Codable {
+public struct GithubRepo: Codable {
     let id: Int
     let name, fullName: String?
     let owner: GithubRepoOwner

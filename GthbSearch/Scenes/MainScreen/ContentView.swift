@@ -12,10 +12,16 @@ struct ContentView: View {
 
     var body: some View {
         VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+            HStack {
+                TextField("Search", text: $viewModel.searchText)
+                    .textFieldStyle(.roundedBorder)
+                    .padding()
+                Button(action: {
+                    viewModel.searchRepos()
+                }) {
+                    Text("Search")
+                }
+            }
         }
         .padding()
     }
