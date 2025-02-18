@@ -34,7 +34,7 @@ struct ContentView: View {
             }
             .navigationBarTitle("Github Search")
             .toolbar {
-                ToolbarItem(placement: .bottomBar) {
+                ToolbarItem(placement: .principal) {
                     HStack {
                         TextField("Search", text: $viewModel.searchText)
                             .textFieldStyle(.roundedBorder)

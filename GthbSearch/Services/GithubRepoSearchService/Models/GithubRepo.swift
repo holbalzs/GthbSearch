@@ -39,11 +39,13 @@ struct GithubRepoOwner: Codable, Hashable {
     let login: String
     let avatarURL: String?
     let url: String?
+    let htmlURL: String?
 
     enum CodingKeys: String, CodingKey {
         case id
         case login
         case avatarURL = "avatar_url"
         case url
+        case htmlURL = "html_url"
     }
 }
