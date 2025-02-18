@@ -17,3 +17,9 @@ public protocol HTTPClient {
     @discardableResult
     func get(from request: URLRequest, completion: @escaping (Result) -> Void) -> HTTPClientTask
 }
+
+extension HTTPURLResponse {
+    var isSuccess: Bool {
+        return (200...299).contains(statusCode)
+    }
+}
