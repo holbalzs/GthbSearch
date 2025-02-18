@@ -9,33 +9,74 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject var viewModel: ViewModel = ViewModel()
+    @State private var path = NavigationPath()
 
     var body: some View {
-        VStack {
-            HStack {
-                TextField("Search", text: $viewModel.searchText)
-                    .textFieldStyle(.roundedBorder)
-                    .padding()
-                Button(action: {
-                    viewModel.searchRepos()
-                }) {
-                    Text("Search")
+        NavigationStack(path: $path) {
+            VStack {
+                switch viewModel.state {
+                case .idle:
+                    EmptyView()
+                case .loading:
+                    ProgressView {
+                        Text("Loading..")
+                    }
+                case .loaded(let repos):
+                    List(repos, id: \.id) { item in
+                        generateItem(item)
+                            .onTapGesture {
+                                path.append(item)
+                            }
+                    }
+                case .failed(let error):
+                    Text(error.localizedDescription)
                 }
             }
-            switch viewModel.state {
-            case .idle:
-                EmptyView()
-            case .loading:
-                ProgressView {
-                    Text("Loading..")
+            .navigationBarTitle("Github Search")
+            .toolbar {
+                ToolbarItem(placement: .bottomBar) {
+                    HStack {
+                        TextField("Search", text: $viewModel.searchText)
+                            .textFieldStyle(.roundedBorder)
+                            .padding()
+                        Button(action: {
+                            viewModel.searchRepos()
+                        }) {
+                            Text("Search")
+                        }
+                        .padding(.trailing)
+                    }
                 }
-            case .loaded(let repos):
-                Text(repos.first?.name ?? "un")
-            case .failed(let error):
-                Text(error.localizedDescription)
+            }
+            .navigationDestination(for: GithubRepo.self) { value in
+                DetailScreenView(gitRepo: value)
             }
         }
-        .padding()
+    }
+
+    @ViewBuilder func generateItem(_ item: GithubRepo) -> some View {
+        VStack(alignment: .leading) {
+            HStack {
+                Text(item.name ?? "no name")
+                    .font(.title)
+
+                Spacer()
+
+                Label((item.stargazersCount ?? 0).description, systemImage: "star")
+                    .font(.caption)
+            }
+            if let description = item.description {
+                Text(description)
+                    .font(.footnote)
+            }
+            HStack {
+                Text("Last update:")
+                    .font(.caption)
+                Text(item.updatedAt, style: .date)
+                    .font(.caption2)
+            }
+        }
+        .contentShape(Rectangle())
     }
 }
 

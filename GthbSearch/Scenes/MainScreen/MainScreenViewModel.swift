@@ -28,7 +28,11 @@ extension ContentView {
 
         func searchRepos() {
             cancellables.removeAll()
-            guard !searchText.isEmpty, searchText.count >= 3 else {
+            guard !searchText.isEmpty else {
+                state = .idle
+                return
+            }
+            guard searchText.count >= 3 else {
                 state = .failed(GTHBSearchError.generalError("Minimum search text length is 3 characters"))
                 return
             }
